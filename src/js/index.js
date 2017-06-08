@@ -1,5 +1,5 @@
 /*
-	FCrypt
+	FileCrypt
 	A class to encrypt and decrypt files with AES GCM
 */
 
@@ -23,41 +23,41 @@ import {
 	splitIvAndData,
 } from './components/util.js';
 
-export default class FCrypt {
-	static ab2str(b) {
+const FileCrypt = {
+	ab2str: function(b) {
 		return ab2str(b);
-	}
-	static str2ab(s) {
+	},
+	str2ab: function(s) {
 		return str2ab(s);
-	}
-	static file2ab(f) {
+	},
+	file2ab: function(f) {
 		return file2ab(f);
-	}
-	static ab2file(b) {
+	},
+	ab2file: function(b) {
 		return ab2file(b);
-	}
-	static mergeIvAndData(iv, data) {
+	},
+	mergeIvAndData: function(iv, data) {
 		return mergeIvAndData(iv, data);
-	}
-	static splitIvAndData(data) {
+	},
+	splitIvAndData: function(data) {
 		return splitIvAndData(data);
-	}
-	static generateKey() {
+	},
+	generateKey: function() {
 		return generateKey();
-	}
-	static exportKey(key) {
+	},
+	exportKey: function(key) {
 		return exportKey(key);
-	}
-	static importKey(buf) {
+	},
+	importKey: function(buf) {
 		return importKey(buf);
-	}
-	static wrapKey(key, wKey) {
+	},
+	wrapKey: function(key, wKey) {
 		return wrapKey(key, wKey);
-	}
-	static unwrapKey(buf, uKey) {
+	},
+	unwrapKey: function(buf, uKey) {
 		return unwrapKey(buf, uKey);
-	}
-	static encrypt(key, file, authData) {
+	},
+	encrypt: function(key, file, authData) {
 		if (file instanceof Blob) {
 			return file2ab(file).then(buf => {
 				return encrypt(key, buf, authData);
@@ -66,8 +66,8 @@ export default class FCrypt {
 			console.log(typeof file)
 			return encrypt(key, file, authData);
 		}
-	}
-	static decrypt(key, iv, file, authData) {
+	},
+	decrypt: function(key, iv, file, authData) {
 		return new Promise((resolve, reject) => {
 			decrypt(key, iv, file, authData)
 			.then(decryptedBuffer => {
@@ -77,5 +77,6 @@ export default class FCrypt {
 				reject(err);
 			})
 		})
-	}
+	},
 }
+module.exports = FileCrypt;

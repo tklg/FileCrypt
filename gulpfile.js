@@ -42,6 +42,6 @@ gulp.task('test', ['e2e'], function() {
 gulp.task('prepublish', function(done) {
     gulp.src(['src/js/index.js'])
         .pipe(webpackStream(require('./webpack.config.js'), webpack))
-        .pipe(rename('index.js'))
-        .pipe(gulp.dest('lib/'));
+        //.pipe(rename('index.js'))
+        //.pipe(gulp.dest('lib/'));
 });

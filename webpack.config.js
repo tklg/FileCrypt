@@ -1,12 +1,24 @@
 const webpack = require('webpack');
+var path = require('path');
 var node_env = (process.env.NODE_ENV || 'development').trim();
+var target = (process.env.NODE_DIST || 'development').trim();
 var is_dev = node_env == 'development';
+
+var SRC_DIR = path.resolve(__dirname, 'lib');
+var APP_DIR = path.resolve(__dirname, './src');
+
 module.exports = {
     resolve: {
         modules: ["./src/js/", "./node_modules/"]
     },
+    entry: APP_DIR + "/js/index.js",
+    devtool: 'source-map',
+    target: 'node',
     output: {
-        filename: 'bundle.js'
+        path: SRC_DIR,
+        filename: target == 'development' ? 'bundle.js' : 'index.js',
+        library: 'FileCrypt',
+        libraryTarget: 'umd'
     },
     module: {
         loaders: [

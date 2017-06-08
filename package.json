@@ -11,7 +11,8 @@
     "sel": "selenium-standalone",
     "sel-install": "selenium-standalone install --config=./selenium.conf.js",
     "selenium": "selenium-standalone start",
-    "prepublish": "set NODE_ENV=production && gulp prepublish --env=production"
+    "prepublish2": "set NODE_ENV=production && gulp prepublish --env=production",
+    "prepublish": "set NODE_DIST=production && webpack"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -23,8 +24,6 @@
     "chai": "^4.0.2",
     "file-saver": "^1.3.3",
     "gulp": "^3.9.1",
-    "gulp-if": "^2.0.2",
-    "gulp-livereload": "^3.8.1",
     "gulp-rename": "^1.2.2",
     "mocha": "^3.4.2",
     "prop-types": "^15.5.10",
