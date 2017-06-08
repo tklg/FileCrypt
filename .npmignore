@@ -2,4 +2,3 @@ node_modules/
 build/
 errorShots/
 test/fixtures/js/
-lib/
