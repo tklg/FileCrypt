@@ -1,6 +1,12 @@
 ## FCrypt
 A webcrypto wrapper for files
 
+**Install:**
+
+```bash
+npm i --save-dev filecrypt
+```
+
 **Usage:**
 
 ```javascript

@@ -58,9 +58,14 @@ export default class FCrypt {
 		return unwrapKey(buf, uKey);
 	}
 	static encrypt(key, file, authData) {
-		return file2ab(file).then(buf => {
-			return encrypt(key, buf, authData);
-		})
+		if (file instanceof Blob) {
+			return file2ab(file).then(buf => {
+				return encrypt(key, buf, authData);
+			})
+		} else {
+			console.log(typeof file)
+			return encrypt(key, file, authData);
+		}
 	}
 	static decrypt(key, iv, file, authData) {
 		return new Promise((resolve, reject) => {

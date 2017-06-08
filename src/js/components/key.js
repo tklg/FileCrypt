@@ -4,6 +4,7 @@ import {
 
 const subtleCrypto = window.crypto.subtle;
 const keyUsages = ["encrypt", "decrypt", "wrapKey", "unwrapKey"];
+const keyType = 'jwk';
 
 function generateKey() {
 	var defaultOpts = [
@@ -23,7 +24,7 @@ function importKey(key) {
 		key = str2ab(key);
 	}
 	var defaultOpts = [
-		"raw", //can be "jwk" or "raw"
+		keyType, //can be "jwk" or "raw"
 	    key,
 	    {   //this is the algorithm options
 	        name: "AES-GCM",
@@ -35,12 +36,12 @@ function importKey(key) {
 }
 
 function exportKey(key) {
-	return subtleCrypto.exportKey('raw', key);
+	return subtleCrypto.exportKey(keyType, key);
 }
 
 function wrapKey(key, wrappingKey) {
 	var defaultOpts = [
-		'raw',
+		keyType,
 		key,
 		wrappingKey,
 		'AES-GCM'
@@ -50,7 +51,7 @@ function wrapKey(key, wrappingKey) {
 
 function unwrapKey(wrappedKey, unwrappingKey) {
 	var defaultOpts = [
-		'raw',
+		keyType,
 		wrappedKey,
 		unwrappingKey,
 		'AES-GCM',
