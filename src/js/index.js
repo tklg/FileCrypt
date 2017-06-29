@@ -9,6 +9,8 @@ import {
 	exportKey,
 	wrapKey,
 	unwrapKey,
+	deriveKey,
+	importPassword,
 } from './components/key.js';
 import {
 	encrypt,
@@ -42,8 +44,9 @@ const FileCrypt = {
 	splitIvAndData: function(data) {
 		return splitIvAndData(data);
 	},
-	generateKey: function() {
-		return generateKey();
+	generateKey: function(key) {
+		if (key) return deriveKey(key);
+		else return generateKey();
 	},
 	exportKey: function(key) {
 		return exportKey(key);
@@ -56,6 +59,12 @@ const FileCrypt = {
 	},
 	unwrapKey: function(buf, uKey) {
 		return unwrapKey(buf, uKey);
+	},
+	deriveKey: function(key) {
+		return deriveKey(key);
+	},
+	importPassword: function(pass, allowEncrypt, salt, iterations) {
+		return importPassword(pass, allowEncrypt).then(key => deriveKey(key, salt, iterations));
 	},
 	encrypt: function(key, file, authData) {
 		if (file instanceof Blob) {

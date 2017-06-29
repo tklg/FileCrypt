@@ -4,15 +4,15 @@
   "description": "a webcrypto wrapper for files",
   "main": "lib/index.js",
   "scripts": {
-    "test": "gulp test",
-    "test-m": "./node_modules/.bin/mocha --compilers js:babel-core/register",
+    "test": "set NODE_ENV=development && gulp test",
+    "test-compile": "set NODE_ENV=development && gulp compile:test",
     "build": "set NODE_ENV=production && gulp --env=production --single",
     "start": "./node_modules/.bin/gulp",
     "sel": "selenium-standalone",
     "sel-install": "selenium-standalone install --config=./selenium.conf.js",
     "selenium": "selenium-standalone start",
     "prepublish2": "set NODE_ENV=production && gulp prepublish --env=production",
-    "prepublish": "set NODE_DIST=production && webpack"
+    "prepublish": "set NODE_ENV=production && webpack"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",

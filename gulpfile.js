@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var webpackStream = require('webpack-stream');
 var webpack = require('webpack');
 var rename = require('gulp-rename');
+var browserSync = require('browser-sync');
 const Launcher = require('webdriverio/build/lib/launcher');
 const path = require('path');
 const wdio = new Launcher(path.join(__dirname, 'wdio.conf.js'));
@@ -10,10 +11,15 @@ var dev = (process.env.NODE_ENV || 'development').trim() == 'development';
 
 gulp.task('default', ['prepublish']);
 
-gulp.task('serve:test', function(done) {
-    gulp.src(['test/specs/tests.web.js'])
-        .pipe(webpackStream(require('./webpack.config.js'), webpack))
-        .pipe(gulp.dest('test/fixtures/js'));
+gulp.task('compile:test', function(done) {
+    //return gulp.src(['test/specs/tests.web.js'])
+    //    .pipe(webpackStream(require('./webpack.config.js'), webpack))
+    webpack(require('./webpack.config.js'), function() {
+        done();
+    })
+        //.pipe(gulp.dest('test/fixtures/js'));
+});
+gulp.task('serve:test', ['compile:test'], function(done) {
     browserSync({
         logLevel: 'silent',
         notify: false,
@@ -40,8 +46,11 @@ gulp.task('test', ['e2e'], function() {
 });
 
 gulp.task('prepublish', function(done) {
-    gulp.src(['src/js/index.js'])
-        .pipe(webpackStream(require('./webpack.config.js'), webpack))
+    //gulp.src(['src/js/index.js'])
+    //    .pipe(webpackStream(require('./webpack.config.js'), webpack))
+    webpack(require('./webpack.config.js'), function() {
+        done();
+    })
         //.pipe(rename('index.js'))
         //.pipe(gulp.dest('lib/'));
 });

@@ -1,5 +1,8 @@
 node_modules/
-build/
 errorShots/
-test/fixtures/js/
+test/
 src/
+gulpfile.js
+selenium.conf.js
+webpack.config.js
+wdio.conf.js

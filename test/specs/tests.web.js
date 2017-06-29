@@ -1,4 +1,4 @@
-import FCrypt from './../../src/js/index.js';
+import FileCrypt from './../../src/js/index.js';
 
 const logs = document.getElementById('logs'),
 	  errorlogs = document.getElementById('errorlogs'),
@@ -22,15 +22,16 @@ function Test(name, test, q) {
 	this.q = q;
 	this.name = name;
 	this.start = function() {
-		tests[this.name] = this.test;
+		//tests[this.name] = this.test;
 		if (!this.q.done()) this.q.next();
-		else generateButtons();
+		//else generateButtons();
 	}
 }
 function TestQueue() {
 	this.q = [];
 	this.add = function(test) {
 		this.q.push(test);
+		tests[test.name] = test.test;
 	}
 	this.next = function() {
 		this.q.shift().start();
@@ -42,7 +43,7 @@ function TestQueue() {
 var queue = new TestQueue();
 queue.add(new Test('generateKey', function() {
 	return new Promise((resolve, reject) => {
-		FCrypt.generateKey()
+		FileCrypt.generateKey()
 		.then(key => {
 			if (key == undefined || key == null) {
 				Loge('[generateKey] key is undefined or null');
@@ -61,9 +62,9 @@ queue.add(new Test('generateKey', function() {
 }, queue));
 queue.add(new Test('exportKey', function() {
 	return new Promise((resolve, reject) => {
-		FCrypt.generateKey()
+		FileCrypt.generateKey()
 		.then(key => {
-			FCrypt.exportKey(key)
+			FileCrypt.exportKey(key)
 			.then(data => {
 				if (key == undefined || key == null) {
 					Loge('[exportKey] key is undefined or null');
@@ -87,11 +88,11 @@ queue.add(new Test('exportKey', function() {
 }, queue));
 queue.add(new Test('importKey', function() {
 	return new Promise((resolve, reject) => {
-		FCrypt.generateKey()
+		FileCrypt.generateKey()
 		.then(key => {
-			FCrypt.exportKey(key)
+			FileCrypt.exportKey(key)
 			.then(data => {
-				FCrypt.importKey(data)
+				FileCrypt.importKey(data)
 				.then(nkey => {
 					if (nkey == undefined || nkey == null) {
 						Loge('[importKey] key is undefined or null');
@@ -116,17 +117,17 @@ queue.add(new Test('importKey', function() {
 }, queue));
 queue.add(new Test('ab2str', function() {
 	return new Promise((resolve, reject) => {
-		FCrypt.generateKey()
+		FileCrypt.generateKey()
 		.then(key => {
-			FCrypt.exportKey(key)
+			FileCrypt.exportKey(key)
 			.then(data => {
-				var keyString = FCrypt.ab2str(data);
+				var keyString = FileCrypt.ab2str(data);
 				if (typeof keyString !== 'string') {
 					Loge('[ab2str] keyString is not a string');
 					resolve();
 				}
-				var keyBuffer = FCrypt.str2ab(keyString);
-				if (keyString != FCrypt.ab2str(keyBuffer)) {
+				var keyBuffer = FileCrypt.str2ab(keyString);
+				if (keyString != FileCrypt.ab2str(keyBuffer)) {
 					Loge("[str2ab] buffer does not match original exported key");
 				} else {
 					Logo('[ab2str] ab2str and str2ab successful');
@@ -146,13 +147,13 @@ queue.add(new Test('ab2str', function() {
 }, queue));
 queue.add(new Test('encrypt', function() {
 	return new Promise((resolve, reject) => {
-		FCrypt.generateKey()
+		FileCrypt.generateKey()
 		.then(key => {
 			var arr = new Uint32Array(100);
 			window.crypto.getRandomValues(arr);
 			//console.log([...arr]);
 			var file = new Blob([arr]);
-			FCrypt.encrypt(key, file)
+			FileCrypt.encrypt(key, file)
 				.then(res => {
 				let {result, iv} = res;
 
@@ -181,14 +182,14 @@ queue.add(new Test('encrypt', function() {
 queue.add(new Test('decrypt', function() {
 	let original = 'The quick brown fox jumps over the lazy dog.';
 	return new Promise((resolve, reject) => {
-		FCrypt.generateKey()
+		FileCrypt.generateKey()
 		.then(key => {
 			var file = new Blob([original], {type: "text/plain"});
-			FCrypt.encrypt(key, file)
+			FileCrypt.encrypt(key, file)
 				.then(res => {
 				let {result, iv} = res;
 
-				FCrypt.decrypt(key, iv, result)
+				FileCrypt.decrypt(key, iv, result)
 				.then(buf => {
 
 					var dec = String.fromCharCode(...new Uint8Array(buf));
@@ -215,7 +216,28 @@ queue.add(new Test('decrypt', function() {
 		});	
 	})
 }, queue));
+queue.add(new Test('importPassword', function() {
+	return new Promise((resolve, reject) => {
+		Log('[importPassword] generating key from password "password1"');
+		FileCrypt.importPassword('password1')
+		.then(key => {
+			if (key == undefined || key == null) {
+				Loge('[importPassword] key is undefined or null');
+			} else if (!key instanceof CryptoKey) {
+				Loge('[importPassword] key is not a CryptoKey');
+			} else {
+				Logo('[importPassword] generateKey successful');
+			}
+			resolve();
+		})
+		.catch(err => {
+			Loge(err);
+			resolve();
+		});	
+	})
+}, queue));
 
+generateButtons();
 queue.next();
 
 function generateButtons() {

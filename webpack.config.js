@@ -1,29 +1,38 @@
 const webpack = require('webpack');
 var path = require('path');
 var node_env = (process.env.NODE_ENV || 'development').trim();
-var target = (process.env.NODE_DIST || 'development').trim();
+var target = (process.env.NODE_ENV || 'development').trim();
 var is_dev = node_env == 'development';
 
-var SRC_DIR = path.resolve(__dirname, 'lib');
+var TARGET_DIR = path.resolve(__dirname, target == 'development' ? './test/fixtures/js' : './lib');
 var APP_DIR = path.resolve(__dirname, './src');
+var TEST_DIR = path.resolve(__dirname, './test/specs');
+
+console.log(TARGET_DIR);
 
 module.exports = {
     resolve: {
         modules: ["./src/js/", "./node_modules/"]
     },
-    entry: APP_DIR + "/js/index.js",
-    devtool: 'source-map',
+    entry: target == 'development' ? TEST_DIR + "/tests.web.js" : APP_DIR + "/js/index.js",
     target: 'node',
     output: {
-        path: SRC_DIR,
-        filename: target == 'development' ? 'bundle.js' : 'index.js',
+        path: TARGET_DIR,
+        filename: 'index.js',
         library: 'FileCrypt',
         libraryTarget: 'umd'
     },
     module: {
-        loaders: [
-           { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
-        ]
+        rules: [{
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: {
+                loader: 'babel-loader',
+                options: {
+                    presets: ['es2015']
+                }
+            }
+        }]
     },
     plugins: is_dev ? [] : [
         new webpack.DefinePlugin({
