@@ -28,6 +28,14 @@ FileCrypt.importPassword(password)
     console.log(key);
 });
 ```
+Deriving an encryption key from another key:
+```javascript
+FileCrypt.deriveKey(fromKey, salt, iterations)
+.then(key => {
+    // key is a CryptoKey object
+    console.log(key);
+});
+```
 Wrapping and unwrapping a *CryptoKey* for storage:
 ```javascript
 FileCrypt.wrapKey(keyToWrap, wrappingKey)

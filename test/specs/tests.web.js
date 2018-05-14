@@ -115,6 +115,32 @@ queue.add(new Test('importKey', function() {
 		});	
 	})
 }, queue));
+queue.add(new Test('deriveKey', function() {
+	return new Promise((resolve, reject) => {
+		FileCrypt.generateKey()
+		.then(key => {
+			FileCrypt.deriveKey(key, '', 4)
+			.then(data => {
+				if (data == undefined || data == null) {
+					Loge('[deriveKey] key is undefined or null');
+				} else if (!data instanceof CryptoKey) {
+					Loge('[deriveKey] key is not an ArrayBuffer');
+				} else {
+					Logo('[deriveKey] deriveKey successful');
+				}
+				resolve();
+			})
+			.catch(err => {
+				Loge(err);
+				resolve();
+			})
+		})
+		.catch(err => {
+			Loge(err);
+			resolve();
+		});	
+	})
+}, queue));
 queue.add(new Test('ab2str', function() {
 	return new Promise((resolve, reject) => {
 		FileCrypt.generateKey()

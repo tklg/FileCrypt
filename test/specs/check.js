@@ -2,7 +2,7 @@ describe('filecrypt', function() {
     browser.url('/');
 
     let btns = $('#btns');
-    let tests = ['generateKey','exportKey','importKey','ab2str','encrypt','decrypt','importPassword'];
+    let tests = ['generateKey','exportKey','importKey','deriveKey','ab2str','encrypt','decrypt','importPassword'];
     let out = browser.element('#output');
 
     browser.waitForExist('#' + tests[tests.length - 1], 500);
