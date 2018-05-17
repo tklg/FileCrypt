@@ -3,7 +3,7 @@ import {
 } from './util.js';
 
 const subtleCrypto = window.crypto.subtle;
-const keyUsages = ["encrypt", "decrypt", "wrapKey", "unwrapKey", "deriveKey"];
+const keyUsages = ["encrypt", "decrypt", "wrapKey", "unwrapKey"];
 const keyType = 'jwk';
 
 function stringToArrayBuffer(string) {
