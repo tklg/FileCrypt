@@ -39,11 +39,12 @@ FileCrypt.deriveKey(fromKey, salt, iterations)
 Wrapping and unwrapping a *CryptoKey* for storage:
 ```javascript
 FileCrypt.wrapKey(keyToWrap, wrappingKey)
-.then(key => {
-    // key is an ArrayBuffer representing the wrapped key
+.then(data => {
+    const {key, iv} = data;
+    // key is an ArrayBuffer representing the wrapped key, iv is the iv used
     console.log(key);
 });
-FileCrypt.unwrapKey(wrappedKey, unwrappingKey)
+FileCrypt.unwrapKey(wrappedKey, unwrappingKey, iv)
 .then(key => {
     // key is a CryptoKey
     console.log(key);

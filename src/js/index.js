@@ -57,14 +57,14 @@ const FileCrypt = {
 	wrapKey: function(key, wKey) {
 		return wrapKey(key, wKey);
 	},
-	unwrapKey: function(buf, uKey) {
-		return unwrapKey(buf, uKey);
+	unwrapKey: function(buf, uKey, iv) {
+		return unwrapKey(buf, uKey, iv);
 	},
 	deriveKey: function(key) {
 		return deriveKey(key);
 	},
-	importPassword: function(pass, allowEncrypt, salt, iterations) {
-		return importPassword(pass, allowEncrypt).then(key => deriveKey(key, salt, iterations));
+	importPassword: function(pass, salt, iterations) {
+		return importPassword(pass).then(key => deriveKey(key, salt, iterations));
 	},
 	encrypt: function(key, file, authData) {
 		if (file instanceof Blob) {
@@ -72,7 +72,6 @@ const FileCrypt = {
 				return encrypt(key, buf, authData);
 			})
 		} else {
-			console.log(typeof file)
 			return encrypt(key, file, authData);
 		}
 	},

@@ -46,21 +46,40 @@ function exportKey(key) {
 }
 
 function wrapKey(key, wrappingKey) {
+	var iv = window.crypto.getRandomValues(new Uint8Array(12));
 	var opts = [
 		keyType,
 		key,
 		wrappingKey,
-		'AES-GCM',
+		{
+			name: 'AES-GCM',
+			iv: iv, 
+			tagLength: 128,
+		},
 	];
-	return subtleCrypto.wrapKey(...opts);
+	return new Promise((res, rej) => {
+		subtleCrypto.wrapKey(...opts).then(data => {
+			res({key: data, iv});
+		}).catch(e => {
+			rej(e);
+		});
+	});
 }
 
-function unwrapKey(wrappedKey, unwrappingKey) {
+function unwrapKey(wrappedKey, unwrappingKey, iv) {
 	var opts = [
 		keyType,
 		wrappedKey,
 		unwrappingKey,
-		'AES-GCM',
+		{
+			name: 'AES-GCM',
+			iv: iv, 
+			tagLength: 128,
+		},
+		{
+	        name: "AES-GCM",
+	        length: 256
+	    },
 		true,
 		keyUsages,
 	];
@@ -88,14 +107,14 @@ function deriveKey(key, salt, iterations) {
 	return subtleCrypto.deriveKey(...opts);
 }
 
-function importPassword(pass, allowEncrypt) {
+function importPassword(pass) {
 	if (typeof pass === 'string') pass = stringToArrayBuffer(pass);
 	var opts = [
 		'raw',
 		pass,
 		{name: "PBKDF2"},
-		!!allowEncrypt,
-		['deriveKey'].concat(allowEncrypt ? keyUsages : []),
+		false,
+		['deriveKey'],
 	];
 	return subtleCrypto.importKey(...opts);
 }
