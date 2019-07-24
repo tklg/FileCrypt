@@ -3,54 +3,46 @@ var webpackStream = require('webpack-stream');
 var webpack = require('webpack');
 var rename = require('gulp-rename');
 var browserSync = require('browser-sync');
-const Launcher = require('webdriverio/build/lib/launcher');
-const path = require('path');
-const wdio = new Launcher(path.join(__dirname, 'wdio.conf.js'));
+var Mocha = require('mocha'),
+    fs = require('fs'),
+    path = require('path');
 
+var mocha = new Mocha();
 var dev = (process.env.NODE_ENV || 'development').trim() == 'development';
 
-gulp.task('default', ['prepublish']);
+mocha.addFile('test/specs/check.js');
 
 gulp.task('compile:test', function(done) {
-    //return gulp.src(['test/specs/tests.web.js'])
-    //    .pipe(webpackStream(require('./webpack.config.js'), webpack))
-    webpack(require('./webpack.config.js'), function() {
-        done();
-    })
-        //.pipe(gulp.dest('test/fixtures/js'));
+  webpack(require('./webpack.config.js'), function() {
+    done();
+  })
 });
-gulp.task('serve:test', ['compile:test'], function(done) {
-    browserSync({
-        logLevel: 'silent',
-        notify: false,
-        open: false,
-        port: 9000,
-        server: {
-            baseDir: ['test/fixtures']
-        },
-        ui: false
-    }, done);
-});
+gulp.task('serve:test', gulp.series('compile:test', function(done) {
+  browserSync({
+    logLevel: 'silent',
+    notify: false,
+    open: false,
+    port: 9000,
+    server: {
+      baseDir: ['test/fixtures']
+    },
+    ui: false
+  }, done);
+}));
 
-gulp.task('e2e', ['serve:test'], function() {
-    wdio.run().then(code => {
-        process.exit(code);
-    }, error => {
-        console.error('Launcher failed to start the test', error.stacktrace);
-        process.exit(1);
-    });
-});
-
-gulp.task('test', ['e2e'], function() {
-    //browserSync.exit();
-});
+gulp.task('test', gulp.series('serve:test', function(done) {
+  mocha.run(function(failures) {
+    process.exitCode = failures ? 1 : 0;
+    done()
+  });
+}));
 
 gulp.task('prepublish', function(done) {
-    //gulp.src(['src/js/index.js'])
-    //    .pipe(webpackStream(require('./webpack.config.js'), webpack))
-    webpack(require('./webpack.config.js'), function() {
-        done();
-    })
-        //.pipe(rename('index.js'))
-        //.pipe(gulp.dest('lib/'));
+  webpack(require('./webpack.config.js'), function() {
+    done();
+  })
 });
+
+gulp.task('default', gulp.series('prepublish', done => {
+    done()
+}));

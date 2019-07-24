@@ -60,9 +60,6 @@ const FileCrypt = {
 	unwrapKey: function(buf, uKey, iv) {
 		return unwrapKey(buf, uKey, iv);
 	},
-	deriveKey: function(key) {
-		return deriveKey(key);
-	},
 	importPassword: function(pass, salt, iterations) {
 		return importPassword(pass).then(key => deriveKey(key, salt, iterations));
 	},

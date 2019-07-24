@@ -1,4 +1,6 @@
 ## FileCrypt
+![npm](https://img.shields.io/npm/dw/filecrypt.svg)
+
 A webcrypto wrapper for files
 
 **Install:**
@@ -23,14 +25,6 @@ FileCrypt.generateKey()
 Generating an encryption key from a password:
 ```javascript
 FileCrypt.importPassword(password)
-.then(key => {
-    // key is a CryptoKey object
-    console.log(key);
-});
-```
-Deriving an encryption key from another key:
-```javascript
-FileCrypt.deriveKey(fromKey, salt, iterations)
 .then(key => {
     // key is a CryptoKey object
     console.log(key);
