@@ -28,7 +28,7 @@
     "gulp-rename": "^1.2.2",
     "mocha": "^6.2.0",
     "prop-types": "^15.5.10",
-    "webpack": "^2.6.1",
+    "webpack": "^5.74.0",
     "webpack-stream": "^5.2.1"
   },
   "dependencies": {
